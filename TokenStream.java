@@ -1,4 +1,3 @@
-package scanner;
 //TokenStream.java
 
 //Implementation of the Scanner for JAY
