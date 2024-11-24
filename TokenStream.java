@@ -1,3 +1,4 @@
+package com.scanner.project;
 // TokenStream.java
 
 // Implementation of the Scanner for JAY
@@ -47,7 +48,8 @@ public class TokenStream {
 
 		// First check for whitespaces and bypass them
 		skipWhiteSpace();
-
+		if(isEof) return null;
+		
 		// Then check for a comment, and bypass it
 		// but remember that / may also be a division operator.
 		while (nextChar == '/') {
@@ -61,13 +63,16 @@ public class TokenStream {
 				{
 					nextChar=readChar();
 					
-					 if (isEof) {
-						 return t;
-					 }
+					 //if (isEof) {
+					//	 return t;
+					 //}
 				}
 				// look for <cr>, <lf>, <ff>
-
-			} else {
+				skipWhiteSpace();
+				if(isEof) return null;
+			}
+			
+			else {
 				// A slash followed by anything else must be an operator.
 				t.setValue("/");
 				t.setType("Operator");
@@ -102,6 +107,7 @@ public class TokenStream {
 					t.setType("Other");
 					nextChar=readChar();
 				}
+				return t;
 			case '<':
 				// <=
 				nextChar=readChar();
@@ -109,6 +115,11 @@ public class TokenStream {
 				{
 					t.setValue(t.getValue()+nextChar);
 					nextChar=readChar();
+					return t;
+				}
+				else
+				{
+					t.setValue("<");
 				}
 				return t;
 			case '>':
@@ -118,6 +129,9 @@ public class TokenStream {
 				{
 					t.setValue(t.getValue()+nextChar);
 					nextChar=readChar();
+					return t;
+				}else{
+					t.setValue(">");
 				}
 				return t;
 			case '=':
@@ -127,6 +141,7 @@ public class TokenStream {
 				{
 					t.setValue(t.getValue()+nextChar);
 					nextChar=readChar();
+					return t;
 				}
 				else
 				{
@@ -140,6 +155,9 @@ public class TokenStream {
 				{
 					t.setValue(t.getValue()+nextChar);
 					nextChar=readChar();
+					return t;
+				}else{
+					t.setValue("!");
 				}
 				return t;
 			case '|':
@@ -197,6 +215,7 @@ public class TokenStream {
 			// now see if this is a keyword
 			if (isKeyword(t.getValue())) {
 				t.setType("Keyword");
+				return t;
 			} else if (t.getValue().equals("True") || t.getValue().equals("False")) {
 				t.setType("Literal");
 			}
@@ -282,7 +301,7 @@ public class TokenStream {
 
 	private boolean isSeparator(char c) {
 		// TODO TO BE COMPLETED
-		if (nextChar=='('||nextChar==')'||nextChar=='{'||nextChar=='}'||nextChar==';'||nextChar==',')
+		if (c=='('||c==')'||c=='{'||c=='}'||c==';'||c==',')
 		{
 			return true;
 		}
@@ -292,7 +311,7 @@ public class TokenStream {
 	private boolean isOperator(char c) {
 		// Checks for characters that start operators
 		// TODO TO BE COMPLETED w completed 
-		if (nextChar=='*'||nextChar=='-'||nextChar=='+'||nextChar=='<'||nextChar=='>'||nextChar=='|'||nextChar=='!'||nextChar=='&'||nextChar=='='||nextChar=='/'||nextChar==':')
+		if (c=='*'||c=='-'||c=='+'||c=='<'||c=='>'||c=='|'||c=='!'||c=='&'||c=='='||c=='/'||c==':')
 		{
 			return true;
 		}
@@ -305,7 +324,7 @@ public class TokenStream {
 
 	private boolean isDigit(char c) {
 		// TODO TO BE COMPLETED
-		if (48 <= (int)nextChar && (int)nextChar<=57)
+		if (c >= '0' && c <= '9')
 		{
 			return true;
 		}
